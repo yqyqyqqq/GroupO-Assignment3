@@ -29,16 +29,17 @@ Developer B should:
 
 ## Project Structure
 ```
-diabetes-rtds/
-├── app_v0_1.py  
+diabetes-rtds/         
 ├── train_v0_1.py
-├── models/
+├── models/  
 │   ├── model_v0_1.joblib
 │   ├── feature_list.json
-│   └── metrics_v0_1.json
+│   └── metrics_v0_1.json  
 ├── .gitignore
 └── README.md
+├── requirements.txt
 ├── Dockerfile
-└── .github/
+├── app_v0_1.py       
+└── .github/  
     └── workflows/
         └── ci.yml
