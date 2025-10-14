@@ -13,7 +13,7 @@ This project simulates a machine learning service that predicts short-term diabe
 | File | Description |
 |------|--------------|
 | models/model_v0_1.joblib | Trained model (scaler + regressor) |
-| models/feature_list.json | Feature names used during training |
+| models/feature_list.json | Feature names used during training |  
 | models/metrics_v0_1.json | Evaluation metrics (RMSE, etc.) |
 
 ### C. How to Run Training
@@ -30,6 +30,7 @@ Developer B should:
 ## Project Structure
 ```
 diabetes-rtds/
+├── app_v0_1.py  
 ├── train_v0_1.py
 ├── models/
 │   ├── model_v0_1.joblib
@@ -37,4 +38,7 @@ diabetes-rtds/
 │   └── metrics_v0_1.json
 ├── .gitignore
 └── README.md
-```
+├── Dockerfile
+└── .github/
+    └── workflows/
+        └── ci.yml
