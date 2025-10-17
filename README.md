@@ -31,12 +31,16 @@ Developer B should:
 ```
 diabetes-rtds/         
 ├── train_v0_1.py
+├── train_v0_2.py
 ├── models/  
-│   ├── model_v0_1.joblib
 │   ├── feature_list.json
-│   └── metrics_v0_1.json  
+│   ├── metrics_v0_1.json
+│   ├── metrics_v0_2.json
+│   ├── model_v0_1.joblib
+│   └── model_v0_2.joblib
 ├── .gitignore
-└── README.md
+├── README.md
+├── CHANGELOG.md
 ├── requirements.txt
 ├── Dockerfile
 ├── app_v0_1.py       
