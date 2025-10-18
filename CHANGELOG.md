@@ -17,9 +17,9 @@
 
 ## 3. Discussion
 
-Performance improved modestly (~1 RMSE point) but consistently across runs.  
-Ridge adds regularization stability, while Random Forest models non-linear feature interactions.  
-Even with small gains, the pipeline now includes automated tuning, logging, and full reproducibility.  
+-Performance improved modestly (~1 RMSE point) but consistently across runs.  
+-Ridge adds regularization stability, while Random Forest models non-linear feature interactions.  
+-Even with small gains, the pipeline now includes automated tuning, logging, and full reproducibility.  
 
 ## 4. Reproducibility
 
