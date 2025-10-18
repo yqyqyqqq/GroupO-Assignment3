@@ -2,7 +2,6 @@
 
 - Tested Ridge Regression and Random Forest models.
 - Selected Random Forest as the final model after tuning.  
-- Compared models with and without preprocessing(feature scaling and selection).
 - Logged metrics and models in /models/.  
 
 ## B. Results
@@ -17,7 +16,6 @@
 
 - The Ridge Regression showed a small improvement by reducing overfitting compared to the baseline.  
 - The Random Forest performed better than Ridge Regression by capturing non-linear relationships in the data.  
-- Preprocessing was tested but did not lead to better results, so it was excluded from the final model.  
   
 ## D. Reproducibility
 
