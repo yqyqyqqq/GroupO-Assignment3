@@ -2,10 +2,10 @@
 
 ## 1. Summary of Changes
 
--Added RidgeRegression with α (regularization) tuning.
--Added RandomForestRegressor with tree-based hyperparameter tuning.
--Used same train/test split (random_state=42) for reproducibility.
--Logged metrics and models in /models/.
+-Added RidgeRegression with α (regularization) tuning.    
+-Added RandomForestRegressor with tree-based hyperparameter tuning.    
+-Used same train/test split (random_state=42) for reproducibility.  
+-Logged metrics and models in /models/.  
 
 ## 2. Quantitative Comparison
 
@@ -17,15 +17,15 @@
 
 ## 3. Discussion
 
-Performance improved modestly (~1 RMSE point) but consistently across runs.
-Ridge adds regularization stability, while Random Forest models non-linear feature interactions.
-Even with small gains, the pipeline now includes automated tuning, logging, and full reproducibility.
+Performance improved modestly (~1 RMSE point) but consistently across runs.  
+Ridge adds regularization stability, while Random Forest models non-linear feature interactions.  
+Even with small gains, the pipeline now includes automated tuning, logging, and full reproducibility.  
 
 ## 4. Reproducibility
 
--Fixed seed = 42, identical data split.
--Environment pinned via requirements.txt.
--Artifacts (model_v0_*.joblib, metrics_v0_*.json) saved for each iteration.
+-Fixed seed = 42, identical data split.  
+-Environment pinned via requirements.txt.  
+-Artifacts (model_v0_*.joblib, metrics_v0_*.json) saved for each iteration.  
 
 ## 5. Conclusion
 
