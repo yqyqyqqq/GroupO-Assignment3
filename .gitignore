@@ -1,8 +1,15 @@
-﻿venv/
-__pycache__/
+﻿Python
+
+venv/
+pycache/
 *.pyc
-*.pyo
-*.log
+.pytest_cache/
+*.egg-info/
 .env
-.DS_Store
-*.db
+
+产物 (Artifacts) - 永远不要提交到 Git!
+
+models/
+metrics.json
+metrics_v*.json
+feature_list.json

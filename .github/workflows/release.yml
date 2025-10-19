@@ -1,0 +1,70 @@
+name: Release (Build, Push, Publish)
+
+on:
+  push:
+    tags:
+      - 'v*' # 只在 v 开头的 tag 上运行, e.g., v0.1
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Get version from tag
+        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_ENV
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run training for release
+        run: python src/train.py --version ${{ env.VERSION }}
+
+      - name: Log in to GitHub Container Registry (GHCR)
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          build-args: |
+            MODEL_VERSION=${{ env.VERSION }}
+          tags: ghcr.io/${{ github.repository }}:${{ env.VERSION }}
+
+      - name: Run container smoke test
+        run: |
+          IMAGE_NAME=ghcr.io/${{ github.repository }}:${{ env.VERSION }}
+          docker run -d -p 8000:8000 --name test-container $IMAGE_NAME
+          sleep 15
+          curl -f http://localhost:8000/health | grep '"model_version": "${{ env.VERSION }}"'
+          docker stop test-container
+
+      - name: Read metrics for release notes
+        id: metrics
+        run: |
+          METRICS_JSON=$(cat metrics.json)
+          echo "body=**Metrics (RMSE):**"$'\n'"\`\`\`json"$'\n'"${METRICS_JSON}"$'\n'"\`\`\`" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Version ${{ env.VERSION }}
+          body: ${{ steps.metrics.outputs.body }}
