@@ -54,11 +54,19 @@ jobs:
           curl -f http://localhost:8000/health | grep '"model_version":"${{ env.VERSION }}"'
           docker stop test-container
 
-      - name: Read metrics for release notes
-        id: metrics
-        run: |
-          METRICS_JSON=$(cat metrics.json)
-          echo "body=**Metrics (RMSE):**"$'\n'"\`\`\`json"$'\n'"${METRICS_JSON}"$'\n'"\`\`\`" >> $GITHUB_OUTPUT
+      - - name: Read metrics for release notes
+          id: metrics
+          run: |
+            METRICS_CONTENT=$(cat metrics.json)
+            {
+              echo 'body<<EOF'
+              echo '**Metrics (RMSE):**'
+              echo ''
+              echo '```json'
+              echo "$METRICS_CONTENT"
+              echo '```'
+              echo 'EOF'
+            } >> "$GITHUB_OUTPUT"
 
       - name: Create GitHub Release
         uses: actions/create-release@v1
