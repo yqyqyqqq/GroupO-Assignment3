@@ -39,4 +39,5 @@ jobs:
         run: |
           echo "--- Testing v0.1 training script ---"
           python src/train.py --version 0.1
+          python src/train.py --version 0.2
 
