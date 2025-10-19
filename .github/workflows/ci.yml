@@ -1,4 +1,5 @@
 # .github/workflows/ci.yml
+
 name: CI (Lint, Unit Test & Smoke Test)
 
 on:
@@ -30,7 +31,6 @@ jobs:
 
       - name: Prepare for Unit Tests by running training
         run: |
-          # 单元测试需要模型文件存在，所以我们先运行一次训练
           python src/train.py --version 0.1
 
       - name: Run Unit Tests with pytest
@@ -43,7 +43,7 @@ jobs:
             python src/train.py --version 0.1
             echo ""
             echo "--- Testing v0.2 training script ---"
-            python src.train.py --version 0.2
+            python src/train.py --version 0.2 # <--- 这里已经被修正了！
           } > training_smoke_test_report.txt
 
       - name: Upload Smoke Test Report Artifact
