@@ -16,7 +16,7 @@ This project was completed in two iterations as per the assignment requirements:
 
 ### v0.2 (Improved Model)
 
-- **Model:** Random forest
+- **Model:** Random Forest
 - **Improvement:** The Random Forest performed better than Ridge Regression by capturing non-linear relationships in the data..
 - **Image Tag:** `:v0.2`
 
