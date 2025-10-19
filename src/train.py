@@ -26,16 +26,7 @@ def get_model(version: str):
             ("scaler", StandardScaler()),
             ("model", LinearRegression())
         ])
-    elif version == "0.2":
-        model = Pipeline([
-            ("scaler", StandardScaler()),
-            ("model", RandomForestRegressor( # <--- 最终模型在这里定义！
-                n_estimators=400, 
-                max_depth=10, 
-                max_features='sqrt', 
-                random_state=RANDOM_SEED
-            ))
-        ])
+
     else:
         raise ValueError(f"Unknown model version: {version}")
     return model
