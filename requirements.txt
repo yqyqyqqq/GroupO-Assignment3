@@ -12,3 +12,6 @@ pandas
 pytest
 pytest-cov
 flake8
+
+# HTTP Client (for testing FastAPI)
+httpx==0.25.0
