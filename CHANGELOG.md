@@ -1,16 +1,16 @@
 ## A. Summary of Changes
 
-- Tested Ridge Regression and Random Forest models.
+- Tested Ridge Regression and Random Forest models.    
+- Selected Random Forest as the final model after tuning.        
+- Logged metrics and models in /models/.      
 
 ## B. Results
-| Version  | Model                 | RMSE ↓ | Main Parameters                                         | 
-| -------- | --------------------- | ------ | ------------------------------------------------------- | 
-| v0.1     | LinearRegression      | 53.85  | StandardScaler + LinearRegression    ted Random Forest as the final model after tuning.  
-- Logged metrics and models in /models/.  
 
-                 | 
-| v0.2     | RidgeRegression       | 53.55  | α = 20.0, solver = auto                                 |
-| v0.2(√)  | RandomForestRegressor | 52.86  | max_depth = 10, n_estimators = 400, max_features = sqrt |
+| Version  | Model                 | RMSE ↓ | Main Parameters                                         |  
+| -------- | --------------------- | ------ | ------------------------------------------------------- |  
+| v0.1     | LinearRegression      | 53.85  | StandardScaler + LinearRegression                       |  
+| v0.2     | RidgeRegression       | 53.55  | α = 20.0, solver = auto                                 |  
+| v0.2(√)  | RandomForestRegressor | 52.87  | max_depth = 10, n_estimators = 400, max_features = sqrt | 
 
 ## C. Discussion
 
