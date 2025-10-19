@@ -1,9 +1,12 @@
+# .github/workflows/release.yml
+
 name: Release (Build, Push, Publish)
 
+# 触发条件：在推送到 v* 格式的 tag 时运行
 on:
   push:
     tags:
-      - 'v*' # 只在 v 开头的 tag 上运行, e.g., v0.1
+      - 'v*'
 
 jobs:
   build-and-release:
@@ -13,23 +16,29 @@ jobs:
       packages: write
 
     steps:
+      # 1. 下载代码
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # 2. 设置 Python 环境
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
+      # 3. 从标签名中提取版本号 (e.g., v0.1 -> 0.1)
       - name: Get version from tag
         run: echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_ENV
 
+      # 4. 安装依赖
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      # 5. 运行训练，生成模型和指标
       - name: Run training for release
         run: python src/train.py --version ${{ env.VERSION }}
 
+      # 6. 登录到 GitHub Container Registry (GHCR)
       - name: Log in to GitHub Container Registry (GHCR)
         uses: docker/login-action@v3
         with:
@@ -37,6 +46,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      # 7. 构建并推送 Docker 镜像
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
@@ -46,28 +56,34 @@ jobs:
             MODEL_VERSION=${{ env.VERSION }}
           tags: ghcr.io/${{ github.repository }}:${{ env.VERSION }}
 
+      # 8. 运行容器烟雾测试 (检查服务是否健康)
       - name: Run container smoke test
         run: |
           IMAGE_NAME=ghcr.io/${{ github.repository }}:${{ env.VERSION }}
+          echo "Testing image: $IMAGE_NAME"
           docker run -d -p 8000:8000 --name test-container $IMAGE_NAME
           sleep 15
+          echo "Checking /health endpoint..."
           curl -f http://localhost:8000/health | grep '"model_version":"${{ env.VERSION }}"'
+          echo "Smoke test passed!"
           docker stop test-container
 
-      - - name: Read metrics for release notes
-          id: metrics
-          run: |
-            METRICS_CONTENT=$(cat metrics.json)
-            {
-              echo 'body<<EOF'
-              echo '**Metrics (RMSE):**'
-              echo ''
-              echo '```json'
-              echo "$METRICS_CONTENT"
-              echo '```'
-              echo 'EOF'
-            } >> "$GITHUB_OUTPUT"
+      # 9. 读取指标，准备写入 Release 描述
+      - name: Read metrics for release notes
+        id: metrics
+        run: |
+          METRICS_CONTENT=$(cat metrics.json)
+          {
+            echo 'body<<EOF'
+            echo '**Metrics (RMSE):**'
+            echo ''
+            echo '```json'
+            echo "$METRICS_CONTENT"
+            echo '```'
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
 
+      # 10. 创建 GitHub Release
       - name: Create GitHub Release
         uses: actions/create-release@v1
         env:
@@ -76,3 +92,4 @@ jobs:
           tag_name: ${{ github.ref }}
           release_name: Version ${{ env.VERSION }}
           body: ${{ steps.metrics.outputs.body }}
+```
