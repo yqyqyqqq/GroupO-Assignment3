@@ -1,8 +1,6 @@
 # .github/workflows/ci.yml
+name: CI (Lint, Unit Test & Smoke Test)
 
-name: CI (Lint & Smoke Test)
-
-# 触发条件：在推送到 main 分支或提交 PR 时运行
 on:
   push:
     branches: [ "main" ]
@@ -10,31 +8,33 @@ on:
     branches: [ "main" ]
 
 jobs:
-  lint-and-test:
+  validate-code:
     runs-on: ubuntu-latest
     steps:
-      # 1. 下载您的代码到服务器
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. 设置 Python 环境
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
-      # 3. 安装所有依赖
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install flake8 # 安装代码检查工具
 
-      # 4. 用 flake8 检查代码风格
       - name: Lint with flake8
-        run: flake8 src --count --select=E9,F63,F7,F82 --show-source --statistics
+        run: flake8 src tests --count --select=E9,F63,F7,F82 --show-source --statistics
 
-      # 5. 运行训练烟雾测试，并将输出结果保存到报告文件中
+      - name: Prepare for Unit Tests by running training
+        run: |
+          # 单元测试需要模型文件存在，所以我们先运行一次训练
+          python src/train.py --version 0.1
+
+      - name: Run Unit Tests with pytest
+        run: pytest
+
       - name: Run Training Smoke Test
         run: |
           {
@@ -42,14 +42,11 @@ jobs:
             python src/train.py --version 0.1
             echo ""
             echo "--- Testing v0.2 training script ---"
-            python src/train.py --version 0.2
+            python src.train.py --version 0.2
           } > training_smoke_test_report.txt
 
-      # 6. (新增步骤) 上传烟雾测试的报告作为 Artifact
-      # 这一步会在每次运行的摘要页面下方，生成一个可供下载的报告文件
       - name: Upload Smoke Test Report Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: smoke-test-report # Artifact 的名字
-          path: training_smoke_test_report.txt # 要上传的文件路径
-
+          name: smoke-test-report
+          path: training_smoke_test_report.txt
