@@ -16,8 +16,8 @@ This project was completed in two iterations as per the assignment requirements:
 
 ### v0.2 (Improved Model)
 
-- **Model:** Ridge Regression
-- **Improvement:** Introduced L2 regularization to enhance model generalization and reduce the risk of overfitting.
+- **Model:** Random forest
+- **Improvement:** The Random Forest performed better than Ridge Regression by capturing non-linear relationships in the data..
 - **Image Tag:** `:v0.2`
 
 > **Note:** For detailed changes, the rationale behind improvements, and a side-by-side performance comparison (RMSE) between v0.1 and v0.2, please see the `CHANGELOG.md` file.

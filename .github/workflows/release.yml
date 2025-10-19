@@ -51,7 +51,7 @@ jobs:
           IMAGE_NAME=ghcr.io/${{ github.repository }}:${{ env.VERSION }}
           docker run -d -p 8000:8000 --name test-container $IMAGE_NAME
           sleep 15
-          curl -f http://localhost:8000/health | grep '"model_version": "${{ env.VERSION }}"'
+          curl -f http://localhost:8000/health | grep '"model_version":"${{ env.VERSION }}"'
           docker stop test-container
 
       - name: Read metrics for release notes
