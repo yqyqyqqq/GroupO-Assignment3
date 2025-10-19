@@ -1,6 +1,14 @@
+# Web Framework
 fastapi
 uvicorn
+
+# Machine Learning
 scikit-learn
 joblib
 numpy
 pandas
+
+# Testing & Code Quality
+pytest
+pytest-cov
+flake8
