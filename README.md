@@ -201,7 +201,11 @@ This project is part of an educational assignment.
 
 ## 🤝 Contributing
 
-Contributions, issues, and feature requests are welcome!
+Everymember in this group makes a great contribution!
+Yuanqing Li
+Qingxiu Zeng
+Nanxi Li
+Wentin Fang
 
 ---
 

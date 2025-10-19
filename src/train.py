@@ -5,7 +5,6 @@ import os
 import pandas as pd
 import numpy as np
 from sklearn.datasets import load_diabetes
-from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import LinearRegression, Ridge
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
@@ -26,16 +25,7 @@ def get_model(version: str):
             ("scaler", StandardScaler()),
             ("model", LinearRegression())
         ])
-    elif version == "0.2":
-        model = Pipeline([
-            ("scaler", StandardScaler()),
-            ("model", RandomForestRegressor( # <--- 最终模型在这里定义！
-                n_estimators=400, 
-                max_depth=10, 
-                max_features='sqrt', 
-                random_state=RANDOM_SEED
-            ))
-        ])
+    
     else:
         raise ValueError(f"Unknown model version: {version}")
     return model
