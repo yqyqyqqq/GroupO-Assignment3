@@ -1,49 +1,130 @@
-﻿# Virtual Diabetes Clinic Triage (v0.1 Baseline)
+﻿Virtual Diabetes Clinic Triage Service
 
-This project simulates a machine learning service that predicts short-term diabetes progression using the open scikit-learn diabetes dataset.
+This is a machine learning-based API service designed to predict the short-term disease progression risk for diabetes patients. The service is packaged as a Docker image and is built and released through a fully automated CI/CD pipeline using GitHub Actions.
 
-## Version: v0.1 (Baseline)
+📋 Iteration Plan & Versions
 
-### A. Model Details
-- Algorithm: StandardScaler + LinearRegression
-- Dataset: sklearn.datasets.load_diabetes
-- Metric (RMSE): see models/metrics_v0_1.json
+This project was completed in two iterations as per the assignment requirements:
 
-### B. Output Files
-| File | Description |
-|------|--------------|
-| models/model_v0_1.joblib | Trained model (scaler + regressor) |
-| models/feature_list.json | Feature names used during training |  
-| models/metrics_v0_1.json | Evaluation metrics (RMSE, etc.) |
+v0.1 (Baseline Model)
 
-### C. How to Run Training
-```bash
-python train_v0_1.py
-```
+Model: LinearRegression
 
-### D. Handoff to Developer B
-Developer B should:
-1. Load the model from models/model_v0_1.joblib
-2. Use feature order from models/feature_list.json
-3. Implement FastAPI service with this model
+Goal: To establish a fully functional, working API service baseline.
 
-## Project Structure
-```
-diabetes-rtds/         
-├── train_v0_1.py
-├── train_v0_2.py
-├── models/  
-│   ├── feature_list.json
-│   ├── metrics_v0_1.json
-│   ├── metrics_v0_2.json
-│   ├── model_v0_1.joblib
-│   └── model_v0_2.joblib
-├── .gitignore
-├── README.md
-├── CHANGELOG.md
-├── requirements.txt
-├── Dockerfile
-├── app_v0_1.py       
-└── .github/  
-    └── workflows/
-        └── ci.yml
+Image Tag: :v0.1
+
+v0.2 (Improved Model)
+
+Model: Ridge Regression
+
+Improvement: Introduced L2 regularization to enhance model generalization and reduce the risk of overfitting.
+
+Image Tag: :v0.2
+
+For detailed changes, the rationale behind improvements, and a side-by-side performance comparison (RMSE) between v0.1 and v0.2, please see the CHANGELOG.md file.
+
+🚀 How to Run the Service
+
+The service is automatically published as a Docker image via GitHub Actions. You can run any version of the service locally by following these steps:
+
+Pull the Docker Image
+
+Replace <your-github-username> and <your-repo-name> with your actual GitHub username and repository name. Replace :v0.1 with the version you wish to run (e.g., :v0.2).
+
+docker pull ghcr.io/<your-github-username>/<your-repo-name>:v0.1
+
+
+Run the Docker Container
+
+docker run -d -p 8000:8000 --name clinic-service ghcr.io/<your-github-username>/<your-repo-name>:v0.1
+
+
+-d: Runs the container in detached mode.
+
+-p 8000:8000: Maps port 8000 on your local machine to port 8000 inside the container.
+
+--name clinic-service: Assigns a name to the running container.
+
+The service is now running on http://localhost:8000!
+
+⚙️ API Usage
+
+The service provides two main API endpoints:
+
+1. Health Check (/health)
+
+Checks if the service is running correctly and returns the currently loaded model version.
+
+URL: GET /health
+
+Example Request:
+
+curl http://localhost:8000/health
+
+
+Success Response (for v0.1):
+
+{
+  "status": "ok",
+  "model_version": "0.1"
+}
+
+
+2. Disease Progression Prediction (/predict)
+
+Accepts patient feature data and returns a continuous disease progression risk score.
+
+URL: POST /predict
+
+Request Body:
+
+{
+  "age": 0.02, "sex": -0.044, "bmi": 0.06, "bp": -0.03,
+  "s1": -0.02, "s2": 0.03, "s3": -0.02, "s4": 0.02,
+  "s5": 0.02, "s6": -0.001
+}
+
+
+Example Request (Linux/macOS/Git Bash):
+
+curl -X POST "http://localhost:8000/predict" \
+-H "Content-Type: application/json" \
+-d '{"age": 0.02, "sex": -0.044, "bmi": 0.06, "bp": -0.03, "s1": -0.02, "s2": 0.03, "s3": -0.02, "s4": 0.02, "s5": 0.02, "s6": -0.001}'
+
+
+Example Request (Windows PowerShell):
+
+curl -Method POST -Uri "http://localhost:8000/predict" -Headers @{ "Content-Type" = "application/json" } -Body '{"age": 0.02, "sex": -0.044, "bmi": 0.06, "bp": -0.03, "s1": -0.02, "s2": 0.03, "s3": -0.02, "s4": 0.02, "s5": 0.02, "s6": -0.001}'
+
+
+Success Response:
+
+{
+  "prediction": 152.133...
+}
+
+
+📂 Project Structure
+
+.
+├── .github/workflows/  # GitHub Actions CI/CD Workflows
+│   ├── ci.yml          # CI pipeline for linting and smoke tests
+│   └── release.yml     # Release pipeline for building and publishing
+├── src/                # All Python source code
+│   ├── main.py         # FastAPI service
+│   └── train.py        # Model training script
+├── .gitignore          # Specifies intentionally untracked files to ignore
+├── CHANGELOG.md        # Log of changes for each version
+├── Dockerfile          # Instructions to build the Docker image
+├── README.md           # This project's documentation
+└── requirements.txt    # List of Python dependencies
+
+
+🤖 CI/CD Automation Workflow
+
+This project utilizes GitHub Actions for MLOps automation:
+
+CI (Continuous Integration): Triggered on every push to the main branch or when a Pull Request is created. The ci.yml workflow runs linting checks and training smoke tests to ensure code quality and integrity.
+
+Release (Continuous Deployment): Triggered when a tag in the format v* (e.g., v0.1, v0.2) is pushed to the repository. The release.yml workflow automates the entire release process: training the model, building the Docker image, running container tests, pushing the image to GHCR, and creating a GitHub Release with metrics.
