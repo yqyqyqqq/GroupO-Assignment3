@@ -8,6 +8,7 @@ app = FastAPI()
 # 加载模型
 model = joblib.load("models/model_v0_2.joblib")
 
+
 class Features(BaseModel):
     age: float
     sex: float
@@ -20,9 +21,11 @@ class Features(BaseModel):
     s5: float
     s6: float
 
+
 @app.get("/health")
 def health():
     return {"status": "ok", "model_version": "v0.2"}
+
 
 @app.post("/predict")
 def predict(features: Features):

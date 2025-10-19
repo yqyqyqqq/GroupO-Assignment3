@@ -5,12 +5,14 @@ from app_v0_2 import app  # 确保 app_v0_2.py 在根目录下
 
 client = TestClient(app)
 
+
 def test_health():
     response = client.get("/health")
     assert response.status_code == 200
     body = response.json()
     assert body["status"] == "ok"
     assert "model_version" in body
+
 
 def test_predict_valid_input():
     payload = {
@@ -23,6 +25,7 @@ def test_predict_valid_input():
     result = response.json()
     assert "prediction" in result
     assert isinstance(result["prediction"], float)
+
 
 def test_predict_invalid_input():
     # 缺少字段，或者类型错误（触发 Pydantic 校验失败）
