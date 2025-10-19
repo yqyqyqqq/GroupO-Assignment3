@@ -202,10 +202,10 @@ This project is part of an educational assignment.
 ## 🤝 Contributing
 
 Everymember in this group makes a great contribution!
-Yuanqing Li
-Qingxiu Zeng
-Nanxi Li
-Wentin Fang
+Yuanqing Li,
+Qingxiu Zeng,
+Nanxi Li,
+Wentin Fang,
 
 ---
 
