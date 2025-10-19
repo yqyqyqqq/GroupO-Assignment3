@@ -92,4 +92,3 @@ jobs:
           tag_name: ${{ github.ref }}
           release_name: Version ${{ env.VERSION }}
           body: ${{ steps.metrics.outputs.body }}
-```
