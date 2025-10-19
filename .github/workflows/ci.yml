@@ -1,5 +1,4 @@
-# .github/workflows/ci.yml
-name: CI - Virtual Diabetes Clinic v0.1
+name: CI - Virtual Diabetes Clinic
 
 on:
   push:
@@ -7,9 +6,15 @@ on:
   pull_request:
   workflow_dispatch:
 
+env:
+  MODEL_PATH: models/model_v0_2.joblib  # 替换成你实际的模型路径
+  DOCKER_IMAGE: diabetes-api
+  VERSION_TAG: v0.2  # 会用于命名镜像，自动与 Docker build 保持一致
+
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -24,17 +29,31 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Smoke test - import model
+      - name: Lint code
         run: |
-          python -c "import joblib; m=joblib.load('models/model_v0_1.joblib'); print('✅ Model loaded OK')"
+          flake8 app_v0_2.py tests
+
+      - name: Run unit tests
+        run: |
+          pip install pytest
+          pytest --junitxml=pytest-report.xml
+
+      - name: Smoke test - load model
+        run: |
+          python -c "import joblib; m=joblib.load('${{ env.MODEL_PATH }}'); print('✅ Model loaded OK')"
 
       - name: Build Docker image
-        run: docker build -t diabetes-api:v0.1 .
+        run: docker build -t ${{ env.DOCKER_IMAGE }}:${{ env.VERSION_TAG }} .
 
-      - name: Run container smoke test
+      - name: Smoke test - run container
         run: |
-          docker run -d -p 8000:8000 --name test_api diabetes-api:v0.1
+          docker run -d -p 8000:8000 --name test_api ${{ env.DOCKER_IMAGE }}:${{ env.VERSION_TAG }}
           sleep 5
-          curl -f http://127.0.0.1:8000/docs || exit 1
+          curl -f http://127.0.0.1:8000/health || exit 1
           docker stop test_api
 
+      - name: Upload model artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: model
+          path: ${{ env.MODEL_PATH }}
